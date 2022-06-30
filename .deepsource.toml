@@ -1,0 +1,31 @@
+version = 1
+
+[[analyzers]]
+name = "ansible"
+enabled = true
+
+[[analyzers]]
+name = "docker"
+enabled = true
+
+[[analyzers]]
+name = "javascript"
+enabled = true
+
+  [analyzers.meta]
+  plugins = [
+    "angular",
+    "angularjs",
+    "ember",
+    "meteor",
+    "vue",
+    "react"
+  ]
+
+[[transformers]]
+name = "prettier"
+enabled = true
+
+[[transformers]]
+name = "standardjs"
+enabled = true
