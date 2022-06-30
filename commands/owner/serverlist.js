@@ -8,14 +8,15 @@ module.exports = {
     category: "owner",
     description: "Displays the list of servers the bot is in!",
     usage: " ",
-    accessableby: "Owner"
+    accessableby: "Owner",
   },
   run: async (bot, message, args) => {
     if (message.author.id == OWNER_ID) {
-      if (!message.guild.me.hasPermission("ADMINISTRATOR"))
+      if (!message.guild.me.hasPermission("ADMINISTRATOR")) {
         return message.channel
           .send("I Dont Have Permissions")
-          .then(msg => msg.delete({ timeout: 5000 }));
+          .then((msg) => msg.delete({ timeout: 5000 }));
+      }
 
       let i0 = 0;
       let i1 = 10;
@@ -25,12 +26,17 @@ module.exports = {
         `Total Servers - ${bot.guilds.cache.size}\n\n` +
         bot.guilds.cache
           .sort((a, b) => b.memberCount - a.memberCount)
-          .map(r => r)
-          .map((r, i) => `**${i + 1}** - ${r.name} | ${r.memberCount} Members\nID - ${r.id}`)
+          .map((r) => r)
+          .map(
+            (r, i) =>
+              `**${i + 1}** - ${r.name} | ${r.memberCount} Members\nID - ${
+                r.id
+              }`
+          )
           .slice(0, 10)
           .join("\n");
 
-      let embed = new Discord.MessageEmbed()
+      const embed = new Discord.MessageEmbed()
         .setAuthor(
           message.author.tag,
           message.author.displayAvatarURL({ dynamic: true })
@@ -40,13 +46,13 @@ module.exports = {
         .setTitle(`Page - ${page}/${Math.ceil(bot.guilds.cache.size / 10)}`)
         .setDescription(description);
 
-      let msg = await message.channel.send(embed);
+      const msg = await message.channel.send(embed);
 
       await msg.react("⬅");
       await msg.react("➡");
       await msg.react("❌");
 
-      let collector = msg.createReactionCollector(
+      const collector = msg.createReactionCollector(
         (reaction, user) => user.id === message.author.id
       );
 
@@ -59,7 +65,7 @@ module.exports = {
 
           // if there is no guild to display, delete the message
           if (i0 + 1 < 0) {
-            console.log(i0)
+            console.log(i0);
             return msg.delete();
           }
           if (!i0 || !i1) {
@@ -70,7 +76,7 @@ module.exports = {
             `Total Servers - ${bot.guilds.cache.size}\n\n` +
             bot.guilds.cache
               .sort((a, b) => b.memberCount - a.memberCount)
-              .map(r => r)
+              .map((r) => r)
               .map(
                 (r, i) => `**${i + 1}** - ${r.name} | ${r.memberCount} Members`
               )
@@ -106,7 +112,7 @@ module.exports = {
             `Total Servers - ${bot.guilds.cache.size}\n\n` +
             bot.guilds.cache
               .sort((a, b) => b.memberCount - a.memberCount)
-              .map(r => r)
+              .map((r) => r)
               .map(
                 (r, i) => `**${i + 1}** - ${r.name} | ${r.memberCount} Members`
               )
@@ -132,7 +138,6 @@ module.exports = {
         await reaction.users.remove(message.author.id);
       });
     } else {
-      return;
     }
-  }
+  },
 };
