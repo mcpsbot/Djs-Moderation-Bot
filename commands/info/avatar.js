@@ -1,39 +1,33 @@
 const Discord = require("discord.js");
 
 module.exports = {
-    config: {
-  name: "avatar",
-  aliases: ["av"],
-  description: "Display a user avatar",
-  usage: "avatar [@user | user ID]",
-  category: "info",
-    },
- run: async (bot, message, args) => {
-  let user;
+  config: {
+    name: "avatar",
+    aliases: ["av"],
+    description: "Display a user avatar",
+    usage: "avatar [@user | user ID]",
+    category: "info",
+  },
+  run: async (bot, message, args) => {
+    let user;
 
-if (message.mentions.users.first())
- {
-user = message.mentions.users.first();
+    if (message.mentions.users.first()) {
+      user = message.mentions.users.first();
+    } else if (args[0]) {
+      user = message.guild.members.cache.get(args[0]).user;
+    } else {
+      user = message.author;
+    }
 
-} else if (args[0]) {
+    const avatar = user.displayAvatarURL({ size: 4096, dynamic: true });
 
-user = message.guild.members.cache.get(args[0]).user;
+    const embed = new Discord.MessageEmbed()
 
-} else {
-user = message. author;
-}
+      .setTitle(`${user.tag} avatar`)
+      .setDescription(`[Avatar URL of ${user.tag}](${avatar})`)
+      .setColor("RANDOM")
+      .setImage(avatar);
 
-
-
-let avatar = user.displayAvatarURL ({size: 4096, dynamic: true});
-
-const embed = new Discord.MessageEmbed()
-
-.setTitle(`${user.tag} avatar`)
-.setDescription(`[Avatar URL of ${user.tag}](${avatar})`) 
-.setColor("RANDOM")
-.setImage(avatar);
-
-return message.channel.send(embed);
-}
+    return message.channel.send(embed);
+  },
 };

@@ -1,8 +1,7 @@
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed } = require("discord.js");
 const ms = require("ms");
 
 module.exports = class ReactionMenu {
-
   /**
    * Create new ReactionMenu
    * @param {Client} bot
@@ -10,19 +9,26 @@ module.exports = class ReactionMenu {
    * @param {GuildMember} member
    * @param {MessageEmbed} embed
    * @param {Array} arr
-   * @param {int} interval 
+   * @param {int} interval
    * @param {Object} reactions
-   * @param {int} timeout 
+   * @param {int} timeout
    */
-  constructor(bot, channel, member, embed, arr = null, interval = 10, reactions = {
-    '⏪': this.first.bind(this), 
-    '◀️': this.previous.bind(this),
-    '🗑️': this.stop.bind(this),
-    '▶️': this.next.bind(this), 
-    '⏩': this.last.bind(this)
-
-  }, timeout = 180000) {
-
+  constructor(
+    bot,
+    channel,
+    member,
+    embed,
+    arr = null,
+    interval = 10,
+    reactions = {
+      "⏪": this.first.bind(this),
+      "◀️": this.previous.bind(this),
+      "🗑️": this.stop.bind(this),
+      "▶️": this.next.bind(this),
+      "⏩": this.last.bind(this),
+    },
+    timeout = 180000
+  ) {
     /**
      * @type {Client}
      */
@@ -74,7 +80,7 @@ module.exports = class ReactionMenu {
      * The max length of the array
      * @type {int}
      */
-    this.max = (this.arr) ? arr.length : null;
+    this.max = this.arr ? arr.length : null;
 
     /**
      * The reactions for menu
@@ -95,17 +101,24 @@ module.exports = class ReactionMenu {
     this.timeout = timeout;
 
     const first = new MessageEmbed(this.json);
-    const description = (this.arr) ? this.arr.slice(this.current, this.interval) : null;
-    if (description) first
-      .setTitle(this.embed.title + ' ' + getRange(this.arr, this.current, this.interval))
-      .setDescription(description);
+    const description = this.arr
+      ? this.arr.slice(this.current, this.interval)
+      : null;
+    if (description) {
+      first
+        .setTitle(
+          this.embed.title +
+            " " +
+            getRange(this.arr, this.current, this.interval)
+        )
+        .setDescription(description);
+    }
 
-    this.channel.send(first).then(message => {
-
+    this.channel.send(first).then((message) => {
       /**
        * The menu message
        * @type {Message}
-     */
+       */
       this.message = message;
 
       this.addReactions();
@@ -127,28 +140,33 @@ module.exports = class ReactionMenu {
    * Creates a reaction collector
    */
   createCollector() {
-    
     // Create collector
-    const collector = this.message.createReactionCollector((reaction, user) => {
-      return (this.emojis.includes(reaction.emoji.name) || this.emojis.includes(reaction.emoji.id)) &&
-        user.id == this.memberId;
-    }, { time: this.timeout });
-    
+    const collector = this.message.createReactionCollector(
+      (reaction, user) => {
+        return (
+          (this.emojis.includes(reaction.emoji.name) ||
+            this.emojis.includes(reaction.emoji.id)) &&
+          user.id == this.memberId
+        );
+      },
+      { time: this.timeout }
+    );
+
     // On collect
-    collector.on('collect', async reaction => {
-      let newPage =  this.reactions[reaction.emoji.name] || this.reactions[reaction.emoji.id];
-      if (typeof newPage === 'function') newPage = newPage();
+    collector.on("collect", async (reaction) => {
+      let newPage =
+        this.reactions[reaction.emoji.name] ||
+        this.reactions[reaction.emoji.id];
+      if (typeof newPage === "function") newPage = newPage();
       if (newPage) await this.message.edit(newPage);
       await reaction.users.remove(this.memberId);
-    }); 
+    });
 
     // On end
-    collector.on('end', () => {
-
-       setTimeout(() => {
-       this.message.delete().catch(() => {});
-    }, 2000);
-      
+    collector.on("end", () => {
+      setTimeout(() => {
+        this.message.delete().catch(() => {});
+      }, 2000);
     });
 
     this.collector = collector;
@@ -161,8 +179,12 @@ module.exports = class ReactionMenu {
     if (this.current === 0) return;
     this.current = 0;
     return new MessageEmbed(this.json)
-      .setTitle(this.embed.title + ' ' + getRange(this.arr, this.current, this.interval))
-      .setDescription(this.arr.slice(this.current, this.current + this.interval));
+      .setTitle(
+        this.embed.title + " " + getRange(this.arr, this.current, this.interval)
+      )
+      .setDescription(
+        this.arr.slice(this.current, this.current + this.interval)
+      );
   }
 
   /**
@@ -173,8 +195,12 @@ module.exports = class ReactionMenu {
     this.current -= this.interval;
     if (this.current < 0) this.current = 0;
     return new MessageEmbed(this.json)
-      .setTitle(this.embed.title + ' ' + getRange(this.arr, this.current, this.interval))
-      .setDescription(this.arr.slice(this.current, this.current + this.interval));
+      .setTitle(
+        this.embed.title + " " + getRange(this.arr, this.current, this.interval)
+      )
+      .setDescription(
+        this.arr.slice(this.current, this.current + this.interval)
+      );
   }
 
   /**
@@ -182,12 +208,19 @@ module.exports = class ReactionMenu {
    */
   next() {
     const cap = this.max - (this.max % this.interval);
-    if (this.current === cap || this.current + this.interval === this.max) return;
+    if (this.current === cap || this.current + this.interval === this.max) {
+      return;
+    }
     this.current += this.interval;
     if (this.current >= this.max) this.current = cap;
-    const max = (this.current + this.interval >= this.max) ? this.max : this.current + this.interval;
+    const max =
+      this.current + this.interval >= this.max
+        ? this.max
+        : this.current + this.interval;
     return new MessageEmbed(this.json)
-      .setTitle(this.embed.title + ' ' + getRange(this.arr, this.current, this.interval))
+      .setTitle(
+        this.embed.title + " " + getRange(this.arr, this.current, this.interval)
+      )
       .setDescription(this.arr.slice(this.current, max));
   }
 
@@ -196,11 +229,15 @@ module.exports = class ReactionMenu {
    */
   last() {
     const cap = this.max - (this.max % this.interval);
-    if (this.current === cap || this.current + this.interval === this.max) return;
+    if (this.current === cap || this.current + this.interval === this.max) {
+      return;
+    }
     this.current = cap;
     if (this.current === this.max) this.current -= this.interval;
     return new MessageEmbed(this.json)
-      .setTitle(this.embed.title + ' ' + getRange(this.arr, this.current, this.interval))
+      .setTitle(
+        this.embed.title + " " + getRange(this.arr, this.current, this.interval)
+      )
       .setDescription(this.arr.slice(this.current, this.max));
   }
 
@@ -213,11 +250,14 @@ module.exports = class ReactionMenu {
 };
 
 function getRange(arr, current, interval) {
-  const max = (arr.length > current + interval) ? current + interval : arr.length;
+  const max = arr.length > current + interval ? current + interval : arr.length;
   current = current + 1;
-  const range = (arr.length == 1 || arr.length == current || interval == 1) ? `[${current}]` : `[${current} - ${max}]`;
+  const range =
+    arr.length == 1 || arr.length == current || interval == 1
+      ? `[${current}]`
+      : `[${current} - ${max}]`;
   return range;
 }
 function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
