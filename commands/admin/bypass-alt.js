@@ -55,7 +55,7 @@ module.exports = {
             `${user.tag} has been added to the bypass list`
           );
         }
-        break;
+
       case "remove":
         if (!checkUser(ID)) {
           return message.channel.send(":x: | **The user doesnt exist**");
@@ -80,7 +80,6 @@ module.exports = {
             `${user.tag} has been deleted from the bypass list`
           );
         }
-        break;
     }
   },
 };

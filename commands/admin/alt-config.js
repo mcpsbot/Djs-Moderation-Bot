@@ -50,7 +50,7 @@ module.exports = {
         return message.channel.send(
           `The punishment for **${message.guild.name}** has been set to: **${punishment}**`
         );
-        break;
+
       case "age":
         const days = args[1];
         if (!days) {
@@ -74,7 +74,7 @@ module.exports = {
         return message.channel.send(
           `The required age has been set to **${days}** days`
         );
-        break;
+
       case "logs":
         const channel = message.mentions.channels.first();
         if (!channel) {
@@ -84,7 +84,7 @@ module.exports = {
         return message.channel.send(
           "**The logs channel has been set to** " + channel.toString()
         );
-        break;
+
       case "show":
         const logs = db.get(`logs.${message.guild.id}`) || "None";
         const punish = db.get(`punishment.${message.guild.id}`) || "None";
@@ -108,7 +108,7 @@ module.exports = {
             message.guild.iconURL({ dynamic: true })
           );
         return message.channel.send({ embed });
-        break;
+
       case "disable":
         check =
           db.get(`logs.${message.guild.id}`) &&
