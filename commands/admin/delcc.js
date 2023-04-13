@@ -31,7 +31,7 @@ module.exports = {
       delete database[value];
 
       const filter = database.filter((x) => {
-        return x != null && x != "";
+        return x !== null && x != "";
       });
 
       db.set(`cmd_${message.guild.id}`, filter);

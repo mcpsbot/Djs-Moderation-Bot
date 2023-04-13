@@ -72,7 +72,7 @@ module.exports = {
             const index = pog.indexOf(data);
             db.delete(`bypass.${message.guild.id}`, data);
             const filter = pog.filter((x) => {
-              return x != null && x != "";
+              return x !== null && x != "";
             });
             db.set(`bypass.${message.guild.id}`, filter);
           }

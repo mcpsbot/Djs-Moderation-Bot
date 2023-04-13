@@ -20,7 +20,7 @@ module.exports = {
     if (message.author.bot || message.channel.type === "dm") return;
     try {
       const fetched = await db.fetch(`prefix_${message.guild.id}`);
-      if (fetched == null) {
+      if (fetched === null) {
         prefix = PREFIX;
       } else {
         prefix = fetched;

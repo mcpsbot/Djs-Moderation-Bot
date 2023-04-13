@@ -76,7 +76,7 @@ module.exports = {
         message.channel.send(sembed2);
       }
       const channel = db.fetch(`modlog_${message.guild.id}`);
-      if (channel == null) return;
+      if (channel === null) return;
 
       if (!channel) return;
 
