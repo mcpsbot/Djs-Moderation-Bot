@@ -1,85 +1,85 @@
-const db = require("quick.db");
+const db = require('quick.db')
 
 module.exports = {
   config: {
-    name: "bypass-alt",
-    aliases: ["b-alt"],
-    description: "Add users who can bypass the alt system",
-    category: "admin",
-    usage: "bypass-alt <option>",
+    name: 'bypass-alt',
+    aliases: ['b-alt'],
+    description: 'Add users who can bypass the alt system',
+    category: 'admin',
+    usage: 'bypass-alt <option>'
   },
   run: async (bot, message, args) => {
-    const options = ["add", "remove"];
-    function check(opt) {
-      return options.some((x) => x === opt);
+    const options = ['add', 'remove']
+    function check (opt) {
+      return options.some((x) => x === opt)
     }
-    async function fetchUser(ID) {
-      const user = await bot.users.cache.get(ID);
-      return user;
+    async function fetchUser (ID) {
+      const user = await bot.users.cache.get(ID)
+      return user
     }
-    async function checkUser(ID) {
-      const user = await fetchUser(ID);
-      if (!user) return false;
-      else return true;
+    async function checkUser (ID) {
+      const user = await fetchUser(ID)
+      if (!user) return false
+      else return true
     }
-    const option = args[0];
-    const ID = args[1];
+    const option = args[0]
+    const ID = args[1]
     if (!option) {
       return message.channel.send(
-        `:x: | **The option must be one of ${options.join(", ")}**`
-      );
+        `:x: | **The option must be one of ${options.join(', ')}**`
+      )
     }
     if (!ID) {
-      return message.channel.send(":x: | **The ID is a required argument**");
+      return message.channel.send(':x: | **The ID is a required argument**')
     }
     if (!check(option.toLowerCase())) {
       return message.channel.send(
-        `:x: | **The option arugument must be one of ${options.join(", ")}**`
-      );
+        `:x: | **The option arugument must be one of ${options.join(', ')}**`
+      )
     }
     switch (option.toLowerCase()) {
-      case "add":
+      case 'add':
         if (!checkUser(ID)) {
-          return message.channel.send(":x: | **The user doesnt exist**");
+          return message.channel.send(':x: | **The user doesnt exist**')
         } else {
-          const user = await fetchUser(ID);
-          const pog = db.get(`bypass.${message.guild.id}`);
-          db.push(`bypass.${message.guild.id}`, user.id);
-          const data = pog.find((x) => x === ID);
+          const user = await fetchUser(ID)
+          const pog = db.get(`bypass.${message.guild.id}`)
+          db.push(`bypass.${message.guild.id}`, user.id)
+          const data = pog.find((x) => x === ID)
           if (data) {
             return message.channel.send(
-              "**The user is already on the bypass list**"
-            );
+              '**The user is already on the bypass list**'
+            )
           }
           return message.channel.send(
             `${user.tag} has been added to the bypass list`
-          );
+          )
         }
 
-      case "remove":
+      case 'remove':
         if (!checkUser(ID)) {
-          return message.channel.send(":x: | **The user doesnt exist**");
+          return message.channel.send(':x: | **The user doesnt exist**')
         } else {
-          const user = await fetchUser(ID);
-          const pog = db.get(`bypass.${message.guild.id}`);
+          const user = await fetchUser(ID)
+          const pog = db.get(`bypass.${message.guild.id}`)
           if (pog) {
-            const data = pog.find((x) => x === ID);
+            const data = pog.find((x) => x === ID)
             if (!data) {
               return message.channel.send(
-                "**The user is not on the bypass list**"
-              );
+                '**The user is not on the bypass list**'
+              )
             }
-            const index = pog.indexOf(data);
-            db.delete(`bypass.${message.guild.id}`, data);
+            const index = pog.indexOf(data)
+            db.delete(`bypass.${message.guild.id}`, data)
             const filter = pog.filter((x) => {
-              return x != null && x != "";
-            });
-            db.set(`bypass.${message.guild.id}`, filter);
+              return x !== null && x != ''
+            })
+            db.set(`bypass.${message.guild.id}`, filter)
           }
           return message.channel.send(
             `${user.tag} has been deleted from the bypass list`
-          );
+          )
         }
     }
-  },
-};
+  }
+}
